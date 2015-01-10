@@ -1,0 +1,37 @@
+body {
+    font-family: Arial, sans-serif;
+    color: #181818;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 90%;
+}
+
+.inputBlock {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    border: 0;
+}
+    .inputWrap {
+        padding: 5px 7px;
+        border: 1px solid #bbbbbb;
+        border-radius: 3px;
+    }
+
+textarea {
+    width: 100%;
+    border: 0;
+    height: 40px;
+}
+    .textareaWrap {
+        padding: 5px 7px 0 7px;
+        border: 1px solid #bbbbbb;
+        border-radius: 3px;
+    }
+
