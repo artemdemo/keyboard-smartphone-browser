@@ -125,7 +125,7 @@ Keyboard = (function() {
         bodyTag.className = bodyTag.className.replace(OPEN_KEYBOARD_CLASS, '');
         return hasFocusedInput = false;
       }
-    }, 500);
+    }, 400);
   };
 
 

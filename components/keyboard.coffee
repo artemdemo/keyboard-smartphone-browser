@@ -91,7 +91,7 @@ class Keyboard
           bodyTag = document.getElementsByTagName('body')[0]
           bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
           hasFocusedInput = false
-      500
+      400
     )
 
   ###
