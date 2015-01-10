@@ -8,6 +8,8 @@ class Keyboard
     height: 0
     width: 0
 
+  hasFocusedInput = false
+
   constructor: () ->
     ## I'm using timeout case if page is loaded and keyboard is still open it will capture the size of small window
     setTimeout(
@@ -22,21 +24,20 @@ class Keyboard
 
   bindListeners: () ->
     ## I need both window and focus listeners, case only one of them isn't providing enough data
-    this.windowResizeListener();
+    this.windowResizeListener()
     this.focusListeners();
 
   ##
   ## Bind listener to window resizing
   ##
   windowResizeListener: () ->
-    body = document.getElementsByTagName('body')[0]
-
     window.addEventListener 'resize', () ->
+      bodyTag = document.getElementsByTagName('body')[0]
       if ( initWindowSize.height > window.innerHeight )
-        if body.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
-          body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS
+        if bodyTag.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
+          bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS
       else
-        body.className = body.className.replace( OPEN_KEYBOARD_CLASS, '' )
+        bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
 
   ##
   ## Binding focus and blur listeners to input and textarea elements
@@ -44,24 +45,62 @@ class Keyboard
   focusListeners: () ->
     inputs = document.getElementsByTagName 'input'
     textareas = document.getElementsByTagName 'textarea'
-    body = document.getElementsByTagName('body')[0]
 
     for input in inputs
-      input.addEventListener 'focus', () ->
-        if body.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
-          if input.type != 'checkbox' && input.type != 'radio' && input.type != 'submit'
-            body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS
-      input.addEventListener 'blur', () ->
-        body.className = body.className.replace( OPEN_KEYBOARD_CLASS, '' )
+      setUniqueId( input );
+      input.addEventListener 'focus', () -> focusAction.apply( this )
+      input.addEventListener 'blur', () -> blurAction.apply( this )
 
     for textarea in textareas
-      textarea.addEventListener 'focus', () ->
-        if body.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
-          body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS
-      textarea.addEventListener 'blur', () ->
-        body.className = body.className.replace( OPEN_KEYBOARD_CLASS, '' )
+      setUniqueId( textarea );
+      textarea.addEventListener 'focus', () -> focusAction.apply( this )
+      textarea.addEventListener 'blur', () -> blurAction.apply( this )
 
     return true
+
+  ##
+  ## This function will fired when input or textarea will get focus
+  ##
+  focusAction = () ->
+    bodyTag = document.getElementsByTagName('body')[0]
+    if bodyTag.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
+      if this.type != 'checkbox' && this.type != 'radio' && this.type != 'submit'
+        bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS
+    ## I'm using unique id because blur has timeout and will fired with delay
+    ## and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
+    hasFocusedInput = getUnigueId( this );
+
+  ##
+  ## This function will fired when input or textarea will lose it focus
+  ##
+  blurAction = () ->
+    thisInput = this
+    setTimeout(
+      () ->
+        if hasFocusedInput == getUnigueId( thisInput )
+          bodyTag = document.getElementsByTagName('body')[0]
+          bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
+          hasFocusedInput = false
+      500)
+
+  ##
+  ## Adding unique id to the given element
+  ##
+  setUniqueId = ( elm ) ->
+    elm.setAttribute( 'data-inque-id', getRandomId() )
+
+  ##
+  ## Return unique id of the given element
+  ##
+  getUnigueId = ( elm ) ->
+    elm.getAttribute( 'data-inque-id' )
+
+  ##
+  ## Creating random ID
+  ##
+  getRandomId = () ->
+    return Math.floor((Math.random() * 9999999) + 1);
+
 
 
 
