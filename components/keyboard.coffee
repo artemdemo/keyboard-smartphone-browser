@@ -10,11 +10,14 @@ class Keyboard
     width: 0
 
   ###
-  # if there is focused input element, this variable will contain it unique id
+  # If there is focused input element, this variable will contain it unique id
   # otherwise it will be 'false'
   ###
   hasFocusedInput = false
 
+  ###
+  # Blur will fire with timeout, in case user select again element that will be blured timeout should be canceled
+  ###
   blurTimeout = null;
 
   constructor: () ->
@@ -92,8 +95,6 @@ class Keyboard
     thisInput = this
     blurTimeout = setTimeout(
       () ->
-        ## ToDo: It is possible that user will click fast between inputs and will come back to input that will be blurd
-        ## ToDo: In this case it is a problem and class 'open-keyboard' will be removed
         if hasFocusedInput == getUniqueId( thisInput )
           bodyTag = document.getElementsByTagName('body')[0]
           bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
@@ -117,7 +118,7 @@ class Keyboard
   ###
   # Creating random ID
   # I need this ID in order to allow delay in blur function
-  # (delay I need, case keyvboard is opening and closing with animation)
+  # (delay I need, case keyboard is opening and closing with animation)
   ###
   getRandomId = () ->
     return Math.floor((Math.random() * 9999999) + 1);
