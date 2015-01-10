@@ -1,7 +1,7 @@
 var Keyboard;
 
 Keyboard = (function() {
-  var OPEN_KEYBOARD_CLASS, blurAction, focusAction, getRandomId, getUnigueId, hasFocusedInput, initWindowSize, setUniqueId;
+  var OPEN_KEYBOARD_CLASS, blurAction, focusAction, getRandomId, getUniqueId, hasFocusedInput, initWindowSize, setUniqueId;
 
   OPEN_KEYBOARD_CLASS = 'keyboard-open';
 
@@ -10,9 +10,20 @@ Keyboard = (function() {
     width: 0
   };
 
+
+  /*
+   * if there is focused input element, this variable will contain it unique id
+   * otherwise it will be 'false'
+   */
+
   hasFocusedInput = false;
 
   function Keyboard() {
+
+    /*
+     * I'm using timeout case if page is loaded and keyboard is still open it will capture the size of small window
+     * Keyboard will be opened if page was reloaded while input element was focused
+     */
     setTimeout(function() {
       initWindowSize.height = window.innerHeight;
       initWindowSize.width = window.innerWidth;
@@ -27,6 +38,11 @@ Keyboard = (function() {
     return this.focusListeners();
   };
 
+
+  /*
+   * Bind listener to window resizing
+   */
+
   Keyboard.prototype.windowResizeListener = function() {
     return window.addEventListener('resize', function() {
       var bodyTag;
@@ -40,6 +56,11 @@ Keyboard = (function() {
       }
     });
   };
+
+
+  /*
+   * Binding focus and blur listeners to input and textarea elements
+   */
 
   Keyboard.prototype.focusListeners = function() {
     var input, inputs, textarea, textareas, _i, _j, _len, _len1;
@@ -68,24 +89,38 @@ Keyboard = (function() {
     return true;
   };
 
+
+  /*
+   * This function will fired when input or textarea will get focus
+   */
+
   focusAction = function() {
     var bodyTag;
-    console.log(this);
     bodyTag = document.getElementsByTagName('body')[0];
     if (bodyTag.className.indexOf(OPEN_KEYBOARD_CLASS) === -1) {
       if (this.type !== 'checkbox' && this.type !== 'radio' && this.type !== 'submit') {
         bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS;
       }
     }
-    return hasFocusedInput = getUnigueId(this);
+
+    /*
+     * I'm using unique id because blur has timeout and will fired with delay
+     * and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
+     */
+    return hasFocusedInput = getUniqueId(this);
   };
+
+
+  /*
+   * This function will fired when input or textarea will lose it focus
+   */
 
   blurAction = function() {
     var thisInput;
     thisInput = this;
     return setTimeout(function() {
       var bodyTag;
-      if (hasFocusedInput === getUnigueId(thisInput)) {
+      if (hasFocusedInput === getUniqueId(thisInput)) {
         bodyTag = document.getElementsByTagName('body')[0];
         bodyTag.className = bodyTag.className.replace(OPEN_KEYBOARD_CLASS, '');
         return hasFocusedInput = false;
@@ -93,13 +128,30 @@ Keyboard = (function() {
     }, 500);
   };
 
+
+  /*
+   * Adding unique id to the given element
+   */
+
   setUniqueId = function(elm) {
-    return elm.setAttribute('data-inque-id', getRandomId());
+    return elm.setAttribute('data-unique-id', getRandomId());
   };
 
-  getUnigueId = function(elm) {
-    return elm.getAttribute('data-inque-id');
+
+  /*
+   * Return unique id of the given element
+   */
+
+  getUniqueId = function(elm) {
+    return elm.getAttribute('data-unique-id');
   };
+
+
+  /*
+   * Creating random ID
+   * I need this ID in order to allow delay in blur function
+   * (delay I need, case keyvboard is opening and closing with animation)
+   */
 
   getRandomId = function() {
     return Math.floor((Math.random() * 9999999) + 1);

@@ -2,16 +2,24 @@
 
 class Keyboard
 
+  ## this class will be added to the 'body' tag
   OPEN_KEYBOARD_CLASS = 'keyboard-open'
 
   initWindowSize =
     height: 0
     width: 0
 
+  ###
+  # if there is focused input element, this variable will contain it unique id
+  # otherwise it will be 'false'
+  ###
   hasFocusedInput = false
 
   constructor: () ->
-    ## I'm using timeout case if page is loaded and keyboard is still open it will capture the size of small window
+    ###
+    # I'm using timeout case if page is loaded and keyboard is still open it will capture the size of small window
+    # Keyboard will be opened if page was reloaded while input element was focused
+    ###
     setTimeout(
       () ->
         initWindowSize.height = window.innerHeight
@@ -27,9 +35,9 @@ class Keyboard
     this.windowResizeListener()
     this.focusListeners();
 
-  ##
-  ## Bind listener to window resizing
-  ##
+  ###
+  # Bind listener to window resizing
+  ###
   windowResizeListener: () ->
     window.addEventListener 'resize', () ->
       bodyTag = document.getElementsByTagName('body')[0]
@@ -39,9 +47,9 @@ class Keyboard
       else
         bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
 
-  ##
-  ## Binding focus and blur listeners to input and textarea elements
-  ##
+  ###
+  # Binding focus and blur listeners to input and textarea elements
+  ###
   focusListeners: () ->
     inputs = document.getElementsByTagName 'input'
     textareas = document.getElementsByTagName 'textarea'
@@ -58,49 +66,51 @@ class Keyboard
 
     return true
 
-  ##
-  ## This function will fired when input or textarea will get focus
-  ##
+  ###
+  # This function will fired when input or textarea will get focus
+  ###
   focusAction = () ->
-    console.log( this )
     bodyTag = document.getElementsByTagName('body')[0]
     if bodyTag.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
       if this.type != 'checkbox' && this.type != 'radio' && this.type != 'submit'
         bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS
-    ## I'm using unique id because blur has timeout and will fired with delay
-    ## and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
-    hasFocusedInput = getUnigueId( this );
+    ###
+    # I'm using unique id because blur has timeout and will fired with delay
+    # and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
+    ###
+    hasFocusedInput = getUniqueId( this );
 
-  ##
-  ## This function will fired when input or textarea will lose it focus
-  ##
+  ###
+  # This function will fired when input or textarea will lose it focus
+  ###
   blurAction = () ->
     thisInput = this
     setTimeout(
       () ->
-        if hasFocusedInput == getUnigueId( thisInput )
+        if hasFocusedInput == getUniqueId( thisInput )
           bodyTag = document.getElementsByTagName('body')[0]
           bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
           hasFocusedInput = false
-      500)
+      500
+    )
 
-  ##
-  ## Adding unique id to the given element
-  ##
+  ###
+  # Adding unique id to the given element
+  ###
   setUniqueId = ( elm ) ->
-    elm.setAttribute( 'data-inque-id', getRandomId() )
+    elm.setAttribute( 'data-unique-id', getRandomId() )
 
-  ##
-  ## Return unique id of the given element
-  ##
-  getUnigueId = ( elm ) ->
-    elm.getAttribute( 'data-inque-id' )
+  ###
+  # Return unique id of the given element
+  ###
+  getUniqueId = ( elm ) ->
+    elm.getAttribute( 'data-unique-id' )
 
-  ##
-  ## Creating random ID
-  ## I need this ID in order to allow delay in blur function
-  ## (delay I need, case keyvboard is opening and closing with animation)
-  ##
+  ###
+  # Creating random ID
+  # I need this ID in order to allow delay in blur function
+  # (delay I need, case keyvboard is opening and closing with animation)
+  ###
   getRandomId = () ->
     return Math.floor((Math.random() * 9999999) + 1);
 
