@@ -21,7 +21,8 @@ Keyboard = (function() {
   }
 
   Keyboard.prototype.bindListeners = function() {
-    return this.windowResizeListener();
+    this.windowResizeListener();
+    return this.focusListeners();
   };
 
   Keyboard.prototype.windowResizeListener = function() {
@@ -47,7 +48,9 @@ Keyboard = (function() {
       input = inputs[_i];
       input.addEventListener('focus', function() {
         if (body.className.indexOf(OPEN_KEYBOARD_CLASS) === -1) {
-          return body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS;
+          if (input.type !== 'checkbox' && input.type !== 'radio' && input.type !== 'submit') {
+            return body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS;
+          }
         }
       });
       input.addEventListener('blur', function() {

@@ -21,10 +21,12 @@ class Keyboard
     this.bindListeners()
 
   bindListeners: () ->
+    ## I need both window and focus listeners, case only one of them isn't providing enough data
     this.windowResizeListener();
+    this.focusListeners();
 
   ##
-  ## Bin listener to window resizing
+  ## Bind listener to window resizing
   ##
   windowResizeListener: () ->
     body = document.getElementsByTagName('body')[0]
@@ -47,7 +49,8 @@ class Keyboard
     for input in inputs
       input.addEventListener 'focus', () ->
         if body.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
-          body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS
+          if input.type != 'checkbox' && input.type != 'radio' && input.type != 'submit'
+            body.className += body.className + ' ' + OPEN_KEYBOARD_CLASS
       input.addEventListener 'blur', () ->
         body.className = body.className.replace( OPEN_KEYBOARD_CLASS, '' )
 
