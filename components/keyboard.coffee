@@ -127,4 +127,4 @@ class Keyboard
 
 
 window.onload = () ->
-  kb = new Keyboard
+  new Keyboard

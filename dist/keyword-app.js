@@ -12,11 +12,16 @@ Keyboard = (function() {
 
 
   /*
-   * if there is focused input element, this variable will contain it unique id
+   * If there is focused input element, this variable will contain it unique id
    * otherwise it will be 'false'
    */
 
   hasFocusedInput = false;
+
+
+  /*
+   * Blur will fire with timeout, in case user select again element that will be blured timeout should be canceled
+   */
 
   blurTimeout = null;
 
@@ -156,7 +161,7 @@ Keyboard = (function() {
   /*
    * Creating random ID
    * I need this ID in order to allow delay in blur function
-   * (delay I need, case keyvboard is opening and closing with animation)
+   * (delay I need, case keyboard is opening and closing with animation)
    */
 
   getRandomId = function() {
@@ -168,6 +173,5 @@ Keyboard = (function() {
 })();
 
 window.onload = function() {
-  var kb;
-  return kb = new Keyboard;
+  return new Keyboard;
 };
