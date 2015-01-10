@@ -15,6 +15,8 @@ class Keyboard
   ###
   hasFocusedInput = false
 
+  blurTimeout = null;
+
   constructor: () ->
     ###
     # I'm using timeout case if page is loaded and keyboard is still open it will capture the size of small window
@@ -78,20 +80,26 @@ class Keyboard
     # I'm using unique id because blur has timeout and will fired with delay
     # and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
     ###
-    hasFocusedInput = getUniqueId( this );
+    hasFocusedInput = getUniqueId( this )
+
+    if ( hasFocusedInput == getUniqueId( this ) && blurTimeout != null )
+      clearTimeout( blurTimeout )
 
   ###
   # This function will fired when input or textarea will lose it focus
   ###
   blurAction = () ->
     thisInput = this
-    setTimeout(
+    blurTimeout = setTimeout(
       () ->
+        ## ToDo: It is possible that user will click fast between inputs and will come back to input that will be blurd
+        ## ToDo: In this case it is a problem and class 'open-keyboard' will be removed
         if hasFocusedInput == getUniqueId( thisInput )
           bodyTag = document.getElementsByTagName('body')[0]
           bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
           hasFocusedInput = false
-      400
+          blurTimeout = null
+      500
     )
 
   ###

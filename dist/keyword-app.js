@@ -1,7 +1,7 @@
 var Keyboard;
 
 Keyboard = (function() {
-  var OPEN_KEYBOARD_CLASS, blurAction, focusAction, getRandomId, getUniqueId, hasFocusedInput, initWindowSize, setUniqueId;
+  var OPEN_KEYBOARD_CLASS, blurAction, blurTimeout, focusAction, getRandomId, getUniqueId, hasFocusedInput, initWindowSize, setUniqueId;
 
   OPEN_KEYBOARD_CLASS = 'keyboard-open';
 
@@ -17,6 +17,8 @@ Keyboard = (function() {
    */
 
   hasFocusedInput = false;
+
+  blurTimeout = null;
 
   function Keyboard() {
 
@@ -107,7 +109,10 @@ Keyboard = (function() {
      * I'm using unique id because blur has timeout and will fired with delay
      * and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
      */
-    return hasFocusedInput = getUniqueId(this);
+    hasFocusedInput = getUniqueId(this);
+    if (hasFocusedInput === getUniqueId(this) && blurTimeout !== null) {
+      return clearTimeout(blurTimeout);
+    }
   };
 
 
@@ -118,14 +123,15 @@ Keyboard = (function() {
   blurAction = function() {
     var thisInput;
     thisInput = this;
-    return setTimeout(function() {
+    return blurTimeout = setTimeout(function() {
       var bodyTag;
       if (hasFocusedInput === getUniqueId(thisInput)) {
         bodyTag = document.getElementsByTagName('body')[0];
         bodyTag.className = bodyTag.className.replace(OPEN_KEYBOARD_CLASS, '');
-        return hasFocusedInput = false;
+        hasFocusedInput = false;
+        return blurTimeout = null;
       }
-    }, 400);
+    }, 500);
   };
 
 
