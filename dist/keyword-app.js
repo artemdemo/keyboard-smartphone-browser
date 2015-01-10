@@ -70,6 +70,7 @@ Keyboard = (function() {
 
   focusAction = function() {
     var bodyTag;
+    console.log(this);
     bodyTag = document.getElementsByTagName('body')[0];
     if (bodyTag.className.indexOf(OPEN_KEYBOARD_CLASS) === -1) {
       if (this.type !== 'checkbox' && this.type !== 'radio' && this.type !== 'submit') {

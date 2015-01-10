@@ -62,6 +62,7 @@ class Keyboard
   ## This function will fired when input or textarea will get focus
   ##
   focusAction = () ->
+    console.log( this )
     bodyTag = document.getElementsByTagName('body')[0]
     if bodyTag.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
       if this.type != 'checkbox' && this.type != 'radio' && this.type != 'submit'
@@ -97,6 +98,8 @@ class Keyboard
 
   ##
   ## Creating random ID
+  ## I need this ID in order to allow delay in blur function
+  ## (delay I need, case keyvboard is opening and closing with animation)
   ##
   getRandomId = () ->
     return Math.floor((Math.random() * 9999999) + 1);
