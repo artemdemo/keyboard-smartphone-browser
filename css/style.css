@@ -35,3 +35,23 @@ textarea {
         border-radius: 3px;
     }
 
+.message.open {
+    display: none;
+}
+
+.message.closed {
+    display: block;
+}
+
+.keyboard-open .message.open {
+    display: block;
+}
+
+.keyboard-open .message.closed {
+    display: none;
+}
+
+.message-wrap {
+    text-align: center;
+    margin-bottom: 10px;
+}

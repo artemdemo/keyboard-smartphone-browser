@@ -11,8 +11,12 @@ Keyboard = (function() {
   };
 
   function Keyboard() {
-    initWindowSize.height = window.innerHeight;
-    initWindowSize.width = window.innerWidth;
+    setTimeout(function() {
+      initWindowSize.height = window.innerHeight;
+      initWindowSize.width = window.innerWidth;
+      console.log(initWindowSize);
+      return true;
+    }, 600);
     this.bindListeners();
   }
 

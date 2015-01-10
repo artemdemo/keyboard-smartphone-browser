@@ -9,8 +9,15 @@ class Keyboard
     width: 0
 
   constructor: () ->
-    initWindowSize.height = window.innerHeight
-    initWindowSize.width = window.innerWidth
+    ## I'm using timeout case if page is loaded and keyboard is still open it will capture the size of small window
+    setTimeout(
+      () ->
+        initWindowSize.height = window.innerHeight
+        initWindowSize.width = window.innerWidth
+        console.log( initWindowSize )
+        return true
+      600
+    )
     this.bindListeners()
 
   bindListeners: () ->
