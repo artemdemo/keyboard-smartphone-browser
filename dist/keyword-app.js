@@ -1,7 +1,7 @@
 var Keyboard;
 
 Keyboard = (function() {
-  var OPEN_KEYBOARD_CLASS, blurAction, blurTimeout, focusAction, getRandomId, getUniqueId, hasFocusedInput, initWindowSize, setUniqueId;
+  var OPEN_KEYBOARD_CLASS, blurAction, blurTimeout, focusAction, getRandomId, getUniqueId, hasFocusedInput, initWindowSize, keyboardClose, keyboardOpen, setUniqueId;
 
   OPEN_KEYBOARD_CLASS = 'keyboard-open';
 
@@ -34,7 +34,6 @@ Keyboard = (function() {
     setTimeout(function() {
       initWindowSize.height = window.innerHeight;
       initWindowSize.width = window.innerWidth;
-      console.log(initWindowSize);
       return true;
     }, 600);
     this.bindListeners();
@@ -56,10 +55,11 @@ Keyboard = (function() {
       bodyTag = document.getElementsByTagName('body')[0];
       if (initWindowSize.height > window.innerHeight) {
         if (bodyTag.className.indexOf(OPEN_KEYBOARD_CLASS) === -1) {
-          return bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS;
+          bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS;
+          return keyboardOpen();
         }
       } else {
-        return bodyTag.className = bodyTag.className.replace(OPEN_KEYBOARD_CLASS, '');
+        return keyboardClose();
       }
     });
   };
@@ -107,6 +107,7 @@ Keyboard = (function() {
     if (bodyTag.className.indexOf(OPEN_KEYBOARD_CLASS) === -1) {
       if (this.type !== 'checkbox' && this.type !== 'radio' && this.type !== 'submit') {
         bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS;
+        keyboardOpen();
       }
     }
 
@@ -129,14 +130,32 @@ Keyboard = (function() {
     var thisInput;
     thisInput = this;
     return blurTimeout = setTimeout(function() {
-      var bodyTag;
       if (hasFocusedInput === getUniqueId(thisInput)) {
-        bodyTag = document.getElementsByTagName('body')[0];
-        bodyTag.className = bodyTag.className.replace(OPEN_KEYBOARD_CLASS, '');
+        keyboardClose();
         hasFocusedInput = false;
         return blurTimeout = null;
       }
     }, 500);
+  };
+
+
+  /*
+   * This function will fire when keyboard is opening
+   */
+
+  keyboardOpen = function() {
+    return true;
+  };
+
+
+  /*
+   * This function will fire when keyboard is closing
+   */
+
+  keyboardClose = function() {
+    var bodyTag;
+    bodyTag = document.getElementsByTagName('body')[0];
+    return bodyTag.className = bodyTag.className.replace(OPEN_KEYBOARD_CLASS, '');
   };
 
 

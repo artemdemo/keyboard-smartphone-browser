@@ -29,7 +29,6 @@ class Keyboard
       () ->
         initWindowSize.height = window.innerHeight
         initWindowSize.width = window.innerWidth
-        console.log( initWindowSize )
         return true
       600
     )
@@ -49,8 +48,9 @@ class Keyboard
       if ( initWindowSize.height > window.innerHeight )
         if bodyTag.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
           bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS
+          keyboardOpen()
       else
-        bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
+        keyboardClose()
 
   ###
   # Binding focus and blur listeners to input and textarea elements
@@ -79,6 +79,7 @@ class Keyboard
     if bodyTag.className.indexOf( OPEN_KEYBOARD_CLASS ) == -1
       if this.type != 'checkbox' && this.type != 'radio' && this.type != 'submit'
         bodyTag.className += bodyTag.className + ' ' + OPEN_KEYBOARD_CLASS
+        keyboardOpen()
     ###
     # I'm using unique id because blur has timeout and will fired with delay
     # and if user only moved focus from one input to another I don't want to change class to 'closed keyboard'
@@ -96,12 +97,24 @@ class Keyboard
     blurTimeout = setTimeout(
       () ->
         if hasFocusedInput == getUniqueId( thisInput )
-          bodyTag = document.getElementsByTagName('body')[0]
-          bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
+          keyboardClose()
           hasFocusedInput = false
           blurTimeout = null
       500
     )
+
+  ###
+  # This function will fire when keyboard is opening
+  ###
+  keyboardOpen  = () ->
+    return true;
+
+  ###
+  # This function will fire when keyboard is closing
+  ###
+  keyboardClose  = () ->
+    bodyTag = document.getElementsByTagName('body')[0]
+    bodyTag.className = bodyTag.className.replace( OPEN_KEYBOARD_CLASS, '' )
 
   ###
   # Adding unique id to the given element
