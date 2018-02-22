@@ -13,7 +13,7 @@ var coffeeSources = [
 gulp.task('coffee', function() {
     gulp.src( coffeeSources )
         .pipe(coffee({bare: true}).on('error', gutil.log))
-        .pipe(concat('keyword-app.js'))
+        .pipe(concat('keyboard-app.js'))
         .pipe(gulp.dest('dist'))
 });
 
